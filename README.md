@@ -65,9 +65,10 @@ checkpoints underneath so an interrupted plan survives until you come back to ju
 
 ## Under the hood
 
-The parts an interviewer usually asks about.
+
 
 **One shared state object, merged by LangGraph.**
+
 Every agent is just a function that reads a `TravelState` TypedDict and returns
 the few keys it wants to update. The trick is the `messages` field: it's declared
 with `operator.add`, so LangGraph appends returned message lists instead of
@@ -121,9 +122,11 @@ Things I cared about beyond the happy path:
 - **The guardrail fails open.** If the validation response comes back malformed,
   the request passes instead of erroring out. Blocking a legit trip over a JSON
   glitch is worse than a rare false negative.
+  
 - **Rejections loop back through supervision.** Revision feedback isn't glued onto
   the old draft — the graph routes back to the supervisor, which re-selects agents
   based on what you actually asked to change.
+  
 - **Simple questions stay cheap.** Because routing picks only the specialists a
   request needs, "when should I visit Kashmir?" costs two LLM calls instead of
   ten. The `llm_calls` counter on every response makes that visible.
