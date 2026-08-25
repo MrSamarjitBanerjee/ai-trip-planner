@@ -48,6 +48,23 @@ checkpoints underneath so an interrupted plan survives until you come back to ju
                   final agent → polished plan
 ```
 
+## 📚 What I Learned
+
+* **LangGraph** — Built stateful multi-agent workflows.
+* **Multi-Agent AI** — Designed specialized agents with separate responsibilities.
+* **Supervisor Pattern** — Dynamically routed requests to the required agents.
+* **MCP** — Integrated AI agents with external tools and live data.
+* **Human-in-the-Loop** — Implemented approval and revision using `interrupt()`.
+* **State Management** — Shared and updated data across agents.
+* **PostgreSQL** — Persisted LangGraph checkpoints for resumable workflows.
+* **FastAPI** — Built APIs around the AI workflow.
+* **Guardrails** — Added input validation and safe fallbacks.
+* **Async Processing** — Handled long-running AI and tool operations efficiently.
+* **LangSmith** — Traced and debugged LLM workflows.
+* **Docker** — Containerized the application for easy local setup.
+
+
+
 ## The crew
 
 | Agent | Job | Data source |
@@ -101,6 +118,28 @@ Things I cared about beyond the happy path:
   
 - **Every agent degrades gracefully.** When live data dies mid-run, the agent
   returns clearly-labelled general advice instead of crashing the request.
+
+
+## API
+
+| Endpoint | Body | Returns |
+|---|---|---|
+| `POST /api/travel` | `{"message": "...", "thread_id": "optional"}` | agent results + draft itinerary, or the final answer when no approval needed |
+| `POST /api/travel/approve` | `{"thread_id": "...", "approved": true/false, "feedback": "..."}` | resumed result; rejecting with feedback re-runs supervision |
+| `GET /health` | – | liveness + feature flags |
+
+## Project layout
+
+```text
+app.py                        FastAPI routes, templates, static wiring
+backend.py                    LangGraph state, agents, graph assembly
+mcp_client.py                 MCP client + per-server tool loading
+custom_weather_mcp_server.py  standalone weather MCP server (stdio)
+templates/ static/            boarding-pass themed UI
+docs/                         banner + design file
+render.yaml                   one-click Render deployment
+```
+
 
 ## Run it locally
 
@@ -156,6 +195,16 @@ docker run -p 8000:8000 --env-file .env ai-trip-planner
 
 The image installs `uv` itself, so the flight MCP server works out of the box.
 
+
+## 🚧 Deployment Note
+
+This project is currently **not publicly deployed** because it depends on multiple external services such as Groq, Tavily, OpenWeather, AviationStack, MCP servers, and PostgreSQL.
+
+Keeping these services running in a public deployment would introduce ongoing API usage costs, secrets management, and third-party service availability issues. For now, the project is designed to be **run locally with Docker**, making it easier to experiment with the multi-agent workflow without unnecessary infrastructure costs.
+
+> **Local-first by design:** The complete application can be run locally with the required API keys and PostgreSQL.
+
+
 ## Deploying to Render
 
 This repo ships a `render.yaml` blueprint. Push to GitHub, then in Render:
@@ -164,27 +213,9 @@ instance together and asks you once for the five API keys. Done.
 
 Two things to know about Render's free tier: the service sleeps after 15 minutes
 idle (~a minute to wake), and free Postgres expires after 30 days. Fine for a
-demo, upgrade if it becomes more than that.
+demo, upgrade if it becomes more than that. I have not Deployed due to API constraints 
 
-## API
 
-| Endpoint | Body | Returns |
-|---|---|---|
-| `POST /api/travel` | `{"message": "...", "thread_id": "optional"}` | agent results + draft itinerary, or the final answer when no approval needed |
-| `POST /api/travel/approve` | `{"thread_id": "...", "approved": true/false, "feedback": "..."}` | resumed result; rejecting with feedback re-runs supervision |
-| `GET /health` | – | liveness + feature flags |
-
-## Project layout
-
-```text
-app.py                        FastAPI routes, templates, static wiring
-backend.py                    LangGraph state, agents, graph assembly
-mcp_client.py                 MCP client + per-server tool loading
-custom_weather_mcp_server.py  standalone weather MCP server (stdio)
-templates/ static/            boarding-pass themed UI
-docs/                         banner + design file
-render.yaml                   one-click Render deployment
-```
 
 ## License
 
