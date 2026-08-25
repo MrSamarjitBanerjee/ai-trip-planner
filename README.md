@@ -63,57 +63,25 @@ checkpoints underneath so an interrupted plan survives until you come back to ju
 | **human approval** | `interrupt()` freezes the run until you respond | *you* |
 | **final** | polished markdown plan, folds in revision feedback | LLM |
 
-## Under the hood
+## ⚙️ Under the Hood
 
+ # Shared State
+-All agents work with a common TravelState. Each agent reads the state and updates only what it needs, while LangGraph handles state merging.
 
+# Dynamic Routing
+The supervisor uses the LLM to return structured JSON containing the required agents and travel constraints. LangGraph then routes the request dynamically instead of following a fixed pipeline.
 
-**One shared state object, merged by LangGraph.**
+Human-in-the-Loop
+After generating the itinerary, interrupt() pauses the graph for approval. The state is checkpointed in PostgreSQL, allowing the workflow to resume later with Command(resume=...) — even after restarting the server.
 
-Every agent is just a function that reads a `TravelState` TypedDict and returns
-the few keys it wants to update. The trick is the `messages` field: it's declared
-with `operator.add`, so LangGraph appends returned message lists instead of
-overwriting them. Each agent can drop its own log line without knowing any other
-agent exists. Every other field is last-write-wins, which is what you want for
-things like `flight_results`.
+MCP Integration
+The project connects to multiple MCP servers using different transports: Tavily via HTTP, AviationStack via uvx/stdio, and a custom weather MCP server. Tools are loaded only when required.
 
-**Routing isn't a hardcoded pipeline — it's JSON from an LLM.**
-The supervisor asks Groq to return strict JSON: which specialists this trip
-needs, plus extracted constraints (destination, budget, dates). Conditional edges
-map those names onto real nodes, so the same graph handles "best time to visit
-Kashmir" with two agents and a full 7-day itinerary with all seven. If the model's
-JSON doesn't parse, the router falls back to running every agent — the original
-pipeline — instead of failing the request.
+Async API + Sync Graph
+FastAPI endpoints are async, while graph execution runs in a threadpool so long-running LLM and MCP calls don't block other API requests.
 
-**What `interrupt()` actually does when the draft pauses.**
-The itinerary agent hands off to a `human_approval` node whose first line calls
-`interrupt()`. At that point LangGraph serializes the entire graph state into
-Postgres and simply stops — there is nothing waiting in RAM. The API replies
-with `requires_approval: true` and a `thread_id`. When you approve (or reject
-with feedback), we re-invoke the same thread with `Command(resume=...)`; the
-checkpointer loads the exact checkpoint, the paused node receives your answer as
-its return value, and execution continues as if nothing happened. Kill and
-restart the server mid-review — the draft is still sitting there, because the
-pause lives in Postgres, not in memory.
-
-**Three MCP servers, three different transports.**
-Tavily runs remotely over streamable HTTP. AviationStack ships as a `uvx`
-package, so the client spawns it as a stdio subprocess on demand. The weather
-server is mine — a small FastMCP file in this repo, launched with the running
-Python interpreter. Same protocol, three delivery models, one client config.
-Tools load lazily per server, so a broken weather server never blocks a hotel search.
-
-**Sync nodes, async tools, and not starving the event loop.**
-Graph nodes are deliberately plain synchronous functions — easier to reason
-about, and they only step into asyncio to await MCP calls. FastAPI's endpoints
-are async, but they push the graph invocation through `run_in_threadpool`,
-because one travel request can block for a minute or two of LLM calls and that
-must not freeze other requests.
-
-**Keeping prompts inside the context window.**
-Upstream agent output gets clipped to ~1800 characters before it's folded into
-downstream prompts, so a chatty Tavily result can't blow up the budget agent.
-A `llm_calls` counter rides along in the state so every run reports how much
-model work it took.
+Context & Cost Control
+Large tool outputs are trimmed before being passed between agents, and an llm_calls counter tracks model usage for each workflow.
 
 ## Design notes
 
@@ -130,6 +98,7 @@ Things I cared about beyond the happy path:
 - **Simple questions stay cheap.** Because routing picks only the specialists a
   request needs, "when should I visit Kashmir?" costs two LLM calls instead of
   ten. The `llm_calls` counter on every response makes that visible.
+  
 - **Every agent degrades gracefully.** When live data dies mid-run, the agent
   returns clearly-labelled general advice instead of crashing the request.
 
