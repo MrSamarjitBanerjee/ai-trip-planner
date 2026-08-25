@@ -6,7 +6,7 @@ services:
     name: ai-trip-planner
     runtime: docker
     plan: free            # spins down after 15 min idle; upgrade for always-on
-    region: singapore     # keep this the SAME region as the database below
+    region: india     # keep this the SAME region as the database below
     healthCheckPath: /health
     envVars:
       - key: DATABASE_URL
@@ -27,4 +27,4 @@ services:
 databases:
   - name: ai-trip-planner-db
     plan: free            # free Postgres expires after 30 days; upgrade to keep data
-    region: singapore
+    region: india
