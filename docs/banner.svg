@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="840" height="230" viewBox="0 0 840 230">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#163457"/>
+      <stop offset="1" stop-color="#081527"/>
+    </linearGradient>
+    <linearGradient id="amber" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F2B95C"/>
+      <stop offset="1" stop-color="#C67F1D"/>
+    </linearGradient>
+  </defs>
+
+  <!-- card -->
+  <rect x="4" y="4" width="832" height="222" rx="18" fill="url(#sky)"/>
+  <rect x="14" y="14" width="812" height="202" rx="12" fill="none"
+        stroke="#9FB4C9" stroke-opacity="0.35" stroke-width="1.5" stroke-dasharray="6 6"/>
+
+  <!-- faint flight trail -->
+  <path d="M 40 190 C 220 150, 420 205, 800 120" stroke="#FBF4E6" stroke-opacity="0.16"
+        stroke-width="1.5" fill="none"/>
+
+  <!-- ticket tag -->
+  <g transform="rotate(-2 118 52)">
+    <rect x="34" y="34" width="196" height="36" rx="4" fill="url(#amber)"/>
+    <text x="132" y="58" text-anchor="middle" fill="#0E2038"
+          font-family="'IBM Plex Mono', Consolas, monospace" font-size="15"
+          font-weight="600" letter-spacing="2">✈ AI TRIP PLANNER</text>
+  </g>
+
+  <!-- title -->
+  <text x="40" y="128" fill="#FBF4E6"
+        font-family="Georgia, 'Times New Roman', serif" font-size="46"
+        font-weight="600">Plan trips with a crew of AI agents.</text>
+
+  <text x="42" y="162" fill="#9FB4C9" font-family="'Segoe UI', Arial, sans-serif"
+        font-size="17">LangGraph orchestration &#183; MCP tools &#183; human-approved itineraries</text>
+
+  <!-- divider between main and stub -->
+  <line x1="596" y1="30" x2="596" y2="200" stroke="#FBF4E6" stroke-opacity="0.25"
+        stroke-width="1.5" stroke-dasharray="5 7"/>
+  <circle cx="596" cy="24" r="7" fill="#081527" stroke="#9FB4C9" stroke-opacity="0.35" stroke-width="1.5"/>
+  <circle cx="596" cy="206" r="7" fill="#081527" stroke="#9FB4C9" stroke-opacity="0.35" stroke-width="1.5"/>
+
+  <!-- stub chips -->
+  <g font-family="'IBM Plex Mono', Consolas, monospace" font-size="12.5" font-weight="600">
+    <rect x="620" y="44" width="182" height="34" rx="17" fill="#E8A33D" fill-opacity="0.16"/>
+    <text x="711" y="65" text-anchor="middle" fill="#F2B95C">SUPERVISOR ROUTING</text>
+
+    <rect x="620" y="90" width="182" height="34" rx="17" fill="#4C9A6A" fill-opacity="0.18"/>
+    <text x="711" y="111" text-anchor="middle" fill="#7BC99B">INPUT GUARDRAIL</text>
+
+    <rect x="620" y="136" width="182" height="34" rx="17" fill="#C1442E" fill-opacity="0.16"/>
+    <text x="711" y="157" text-anchor="middle" fill="#E07B67">HUMAN IN THE LOOP</text>
+  </g>
+</svg>

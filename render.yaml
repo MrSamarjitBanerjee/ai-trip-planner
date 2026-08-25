@@ -1,0 +1,30 @@
+# render blueprint: creates the web service and its postgres together.
+# the dashboard asks once for the keys marked sync: false.
+
+services:
+  - type: web
+    name: ai-trip-planner
+    runtime: docker
+    plan: free            # spins down after 15 min idle; upgrade for always-on
+    region: singapore     # keep this the SAME region as the database below
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: ai-trip-planner-db
+          property: connectionString
+      - key: GROQ_API_KEY
+        sync: false       # enter your real key in the dashboard during setup
+      - key: TAVILY_API_KEY
+        sync: false
+      - key: AVIATION_STACK_API_KEY
+        sync: false
+      - key: OPENWEATHER_API_KEY
+        sync: false
+      - key: GROQ_MODEL
+        value: openai/gpt-oss-20b
+
+databases:
+  - name: ai-trip-planner-db
+    plan: free            # free Postgres expires after 30 days; upgrade to keep data
+    region: singapore

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Trip Planner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+  <div class="sky" aria-hidden="true">
+    <span class="trail trail-1"></span>
+    <span class="trail trail-2"></span>
+  </div>
+
+  <main class="app-shell">
+
+    <header class="masthead">
+      <div class="ticket-tag">
+        <span class="plane">✈</span> AI TRIP PLANNER
+      </div>
+      <p class="masthead-caption">LangGraph &middot; MCP &middot; Supervisor &middot; Guardrails &middot; Human&#8209;in&#8209;the&#8209;Loop</p>
+    </header>
+
+    <section class="hero">
+      <h1>Plan your perfect trip<br><span>with AI &#8209;Agents.</span></h1>
+      <p class="hero-copy">
+        Search flights, discover hotels, check the weather and weigh your budget —
+        then review the draft itinerary before the final plan is issued.
+      </p>
+    </section>
+
+    <section class="boarding-pass">
+
+      <div class="bp-main">
+        <div class="bp-row">
+          <div class="bp-heading">
+            <span class="eyebrow">Destination</span>
+            <h2>Where do you want to go?</h2>
+            <p class="bp-hint">e.g. Plan a complete 7 day Japan trip from India under 2 lakhs.</p>
+          </div>
+          
+        </div>
+
+        <textarea
+          id="userInput"
+          placeholder="Plan a complete 7 days Japan trip including flights, hotels and sightseeing under 2 lakhs..."
+        ></textarea>
+
+        <div class="quick-prompts">
+          <button class="tag" onclick="setPrompt('Plan a complete 7 days Japan trip from India including flights, hotels and sightseeing under 2 lakhs inr.')">
+            Japan trip
+          </button>
+          <button class="tag" onclick="setPrompt('Plan a 5 days Kashmir trip from Kolkata, India with flights, hotels and sightseeing.')">
+            Kashmir trip
+          </button>
+          <button class="tag" onclick="setPrompt('Plan a 7 days Switzerland trip from Delhi, India with budget hotels and sightseeing.')">
+            Switzerland trip
+          </button>
+          <button class="tag" onclick="setPrompt('Give me all country flight info.')">
+            Global flights
+          </button>
+        </div>
+      </div>
+
+      <div class="bp-divider" aria-hidden="true"></div>
+
+      <div class="bp-stub">
+        <span class="stub-label">Boarding</span>
+        <button id="sendBtn" class="board-btn" onclick="sendMessage()">
+          <span id="btnText">Generate Draft</span>
+          <span id="btnLoader" class="loader hidden"></span>
+        </button>
+        <span class="stub-note">Ctrl + Enter to send</span>
+      </div>
+
+    </section>
+
+    <section id="workflowSection" class="workflow hidden">
+      <div class="workflow-head">
+        <div class="workflow-title">
+          <span class="eyebrow">Supervisor Agent</span>
+          <h2>Execution Plan</h2>
+        </div>
+        <span id="guardrailBadge" class="stamp">Guardrail passed</span>
+      </div>
+      <p id="supervisorReasoning" class="workflow-copy"></p>
+      <div id="agentChips" class="agent-chips"></div>
+    </section>
+
+    <section id="resultSection" class="ticket-result hidden">
+      <div class="result-head">
+        <div class="result-meta">
+          <h2 id="resultTitle">Your AI Travel Plan</h2>
+          <p id="threadInfo" class="ref-code">Thread ID: -</p>
+        </div>
+        <div class="result-actions">
+          <button class="copy-btn" onclick="copyResult()">Copy</button>
+          <button class="download-btn" onclick="downloadPDF()">Download PDF</button>
+        </div>
+      </div>
+
+      <div id="pdfContent" class="pdf-content">
+        <h1 class="pdf-title">AI Travel Plan</h1>
+        <div id="resultBox" class="result-box"></div>
+      </div>
+    </section>
+
+    <section id="approvalSection" class="approval hidden">
+      <div class="approval-stamp">👤</div>
+      <div class="approval-body">
+        <span class="eyebrow">Human&#8209;in&#8209;the&#8209;Loop</span>
+        <h2>Review the draft itinerary</h2>
+        <p id="approvalRequest">
+          Approve the draft or provide feedback before the final plan is generated.
+        </p>
+
+        <textarea
+          id="approvalFeedback"
+          class="feedback"
+          placeholder="Add revision feedback, for example: reduce the hotel cost and add one free day..."
+        ></textarea>
+
+        <div class="approval-actions">
+          <button id="approveBtn" class="btn-approve" onclick="submitApproval(true)">
+            Approve &amp; Generate Final
+          </button>
+          <button id="reviseBtn" class="btn-revise" onclick="submitApproval(false)">
+            Revise Using Feedback
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section id="errorBox" class="error-box hidden"></section>
+
+  </main>
+
+  <footer>
+    Built By <a class="credit-link" href="https://samarjitbanerjee.in/" target="_blank" rel="noopener">Samarjit Banerjee</a>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="/static/script.js"></script>
+</body>
+</html>
