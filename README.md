@@ -65,23 +65,23 @@ checkpoints underneath so an interrupted plan survives until you come back to ju
 
 ## ⚙️ Under the Hood
 
- # Shared State
+Shared State
 -All agents work with a common TravelState. Each agent reads the state and updates only what it needs, while LangGraph handles state merging.
 
-# Dynamic Routing
-The supervisor uses the LLM to return structured JSON containing the required agents and travel constraints. LangGraph then routes the request dynamically instead of following a fixed pipeline.
+Dynamic Routing
+-The supervisor uses the LLM to return structured JSON containing the required agents and travel constraints. LangGraph then routes the request dynamically instead of following a fixed pipeline.
 
 Human-in-the-Loop
-After generating the itinerary, interrupt() pauses the graph for approval. The state is checkpointed in PostgreSQL, allowing the workflow to resume later with Command(resume=...) — even after restarting the server.
+-After generating the itinerary, interrupt() pauses the graph for approval. The state is checkpointed in PostgreSQL, allowing the workflow to resume later with Command(resume=...) — even after restarting the server.
 
 MCP Integration
-The project connects to multiple MCP servers using different transports: Tavily via HTTP, AviationStack via uvx/stdio, and a custom weather MCP server. Tools are loaded only when required.
+-The project connects to multiple MCP servers using different transports: Tavily via HTTP, AviationStack via uvx/stdio, and a custom weather MCP server. Tools are loaded only when required.
 
 Async API + Sync Graph
-FastAPI endpoints are async, while graph execution runs in a threadpool so long-running LLM and MCP calls don't block other API requests.
+-FastAPI endpoints are async, while graph execution runs in a threadpool so long-running LLM and MCP calls don't block other API requests.
 
 Context & Cost Control
-Large tool outputs are trimmed before being passed between agents, and an llm_calls counter tracks model usage for each workflow.
+-Large tool outputs are trimmed before being passed between agents, and an llm_calls counter tracks model usage for each workflow.
 
 ## Design notes
 
