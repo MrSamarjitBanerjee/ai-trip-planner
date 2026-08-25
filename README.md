@@ -23,7 +23,7 @@ checkpoints underneath so an interrupted plan survives until you come back to ju
 
 </div>
 
-<img width="1913" height="833" alt="Screenshot 2026-08-25 134215" src="https://github.com/user-attachments/assets/fa411efc-dfa3-4f15-a554-06d772e46795" />
+<img width="1887" height="927" alt="image" src="https://github.com/user-attachments/assets/7db90cca-70fe-4b17-860c-bcf2f345ef4a" />
 <img width="1725" height="947" alt="Screenshot 2026-08-25 144103" src="https://github.com/user-attachments/assets/e125f3a8-3e50-4caf-93f4-ed5a7dfe0c12" />
 <img width="1907" height="951" alt="Screenshot 2026-08-25 144150" src="https://github.com/user-attachments/assets/a94686ad-944e-4b31-ba04-dfe9fa377a62" />
 
