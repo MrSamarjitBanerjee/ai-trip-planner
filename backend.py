@@ -158,7 +158,7 @@ def supervisor_agent(state: TravelState):
     query = state["user_query"]
     llm_calls = state.get("llm_calls", 0)
 
-    # folding reviewer feedback into routing on every revision
+   
     revision_feedback = str(state.get("human_feedback", "") or "").strip()
     if revision_feedback:
         query = f"{query}\n\nUser revision feedback: {revision_feedback}"
@@ -182,8 +182,7 @@ User request:
 {query}
 """
 
-    # letting requests through when guardrail output fails to parse;
-    # blocking genuine trips over a format glitch costs more than a miss
+    
 
     try:
         guardrail_raw = _llm_text(
@@ -641,8 +640,7 @@ def bus_agent(state: TravelState):
 
 def human_approval_agent(state: TravelState):
 
-    # pausing the whole run here; langgraph serializes state into postgres
-    # and hands control to whoever reviews the draft
+   
     review = interrupt(
         {
             "question": "Do you approve this itinerary?",
