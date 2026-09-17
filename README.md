@@ -62,7 +62,7 @@ checkpoints underneath so an interrupted plan survives until you come back to ju
 * **Guardrails** — Added input validation and safe fallbacks.
 * **Async Processing** — Handled long-running AI and tool operations efficiently.
 * **LangSmith** — Traced and debugged LLM workflows.
-* **Docker** — Containerized the application for easy local setup.
+
 
 
 
