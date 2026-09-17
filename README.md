@@ -187,14 +187,7 @@ data — every other agent works without it.
 | `GROQ_MODEL` | no | model override (defaults to `openai/gpt-oss-120b`) |
 | `LANGSMITH_*` | no | turn on LangSmith tracing while debugging |
 
-## Docker
 
-```powershell
-docker build -t ai-trip-planner .
-docker run -p 8000:8000 --env-file .env ai-trip-planner
-```
-
-The image installs `uv` itself, so the flight MCP server works out of the box.
 
 
 ## 🚧 Deployment Note
